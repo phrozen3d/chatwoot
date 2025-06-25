@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class SuperAdmin::Devise::SessionsController < Devise::SessionsController
+  helper_method :microsoft_oauth_url
+
   def new
     self.resource = resource_class.new(sign_in_params)
   end

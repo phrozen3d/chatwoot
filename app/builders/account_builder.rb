@@ -71,7 +71,7 @@ class AccountBuilder
   end
 
   def create_user
-    @user = User.new(provider: provider
+    @user = User.new(provider: provider,
                      email: @email,
                      password: user_password,
                      password_confirmation: user_password,
