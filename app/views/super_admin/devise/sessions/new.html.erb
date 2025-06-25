@@ -16,6 +16,10 @@
           </h2>
         </section>
         <section class="bg-white shadow sm:mx-auto mt-11 sm:w-full sm:max-w-lg dark:bg-slate-800 p-11 sm:shadow-lg sm:rounded-lg mb-8 mt-15">
+          <a href="<%= microsoft_oauth_url %>" class="btn btn-primary">
+            <img src="/assets/images/channels/ms-symbollockup_signin_dark.svg" alt="Microsoft Login" />
+            Login with Microsoft
+          </a>
           <div>
             <%= form_for(resource, as: resource_name, url: '/super_admin/sign_in') do |f| %>
               <% if flash[:error].present? %>

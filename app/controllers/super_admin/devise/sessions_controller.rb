@@ -31,4 +31,14 @@ class SuperAdmin::Devise::SessionsController < Devise::SessionsController
     @error_message = 'Invalid credentials. Please try again.'
     false
   end
+
+  def microsoft_oauth_url
+    redirect_uri = ENV.fetch('MICROSOFT_OAUTH_CALLBACK_URL', nil)
+    client_id = ENV.fetch('MICROSOFT_CLIENT_ID', nil)
+    client_secret = ENV.fetch('MICROSOFT_CLIENT_SECRET', nil)
+    tenant_id = ENV.fetch('MICROSOFT_TENANT_ID', nil)
+    scope = 'User.Read openid email profile'
+
+    "https://login.microsoftonline.com/#{tenant_id}/oauth2/v2.0/authorize?client_id=#{client_id}&redirect_uri=#{redirect_uri}&response_type=code&response_mode=query&scope=#{scope}"
+  end
 end

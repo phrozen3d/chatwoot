@@ -59,12 +59,13 @@ module Auth
           user_full_name: name,
           email: email,
           locale: I18n.locale,
-          confirmed: true
+          confirmed: true,
+          provider: 'microsoft'
         ).perform
 
         # Step 4: Redirect with SSO token
         sso_token = @resource.generate_sso_auth_token
-        redirect_to login_url(email: user.email, sso_auth_token: sso_token)
+        redirect_to login_url(email: email, sso_auth_token: sso_token)
       else
         # Step 4: Redirect with SSO token
         sso_token = user.generate_sso_auth_token
