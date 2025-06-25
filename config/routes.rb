@@ -6,6 +6,10 @@ Rails.application.routes.draw do
     get 'microsoft_oauth/callback', to: 'microsoft_oauth#callback'
   end
   
+  namespace :auth do
+    get 'microsoft_oauth/admin_callback', to: 'microsoft_oauth#admin_callback'
+  end
+  
   # AUTH STARTS
   mount_devise_token_auth_for 'User', at: 'auth', controllers: {
     confirmations: 'devise_overrides/confirmations',
