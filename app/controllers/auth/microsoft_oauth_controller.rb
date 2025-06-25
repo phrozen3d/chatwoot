@@ -73,6 +73,38 @@ module Auth
       end
     end
 
+    def admin_callback
+      code = params[:code]
+      ENV.fetch('FRONTEND_URL', nil)
+      redirect_uri = ENV.fetch('MICROSOFT_OAUTH_CALLBACK_URL', nil)
+      client_id = ENV.fetch('MICROSOFT_CLIENT_ID', nil)
+      client_secret = ENV.fetch('MICROSOFT_CLIENT_SECRET', nil)
+      tenant_id = ENV.fetch('MICROSOFT_TENANT_ID', nil)
+
+      # Step 1: Exchange code for token
+      token_uri = URI("https://login.microsoftonline.com/#{tenant_id}/oauth2/v2.0/token")
+      token_response = Net::HTTP.post_form(token_uri, {
+        'client_id' => client_id,
+        'client_secret' => client_secret,
+        'grant_type' => 'authorization_code',
+        'code' => code,
+        'redirect_uri' => redirect_uri,
+        'scope' => 'User.Read openid email profile'
+      })
+
+      token_data = JSON.parse(token_response.body)
+      access_token = token_data['access_token']
+
+      unless access_token
+        Rails.logger.error "Microsoft OAuth failed: #{token_data}"
+        redirect_to(super_admin_session_path, flash: { error: "Microsoft OAuth failed" })
+      end
+
+      sign_in(:super_admin, @super_admin)
+      flash.discard
+      redirect_to super_admin_users_path
+    end
+
     private
 
     def login_url(email: nil, sso_auth_token: nil, error: nil)

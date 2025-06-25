@@ -35,7 +35,7 @@ class SuperAdmin::Devise::SessionsController < Devise::SessionsController
   end
 
   def microsoft_oauth_url
-    redirect_uri = ENV.fetch('MICROSOFT_OAUTH_CALLBACK_URL', nil)
+    redirect_uri = ENV.fetch('MICROSOFT_OAUTH_ADMIN_CALLBACK_URL', nil)
     client_id = ENV.fetch('MICROSOFT_CLIENT_ID', nil)
     client_secret = ENV.fetch('MICROSOFT_CLIENT_SECRET', nil)
     tenant_id = ENV.fetch('MICROSOFT_TENANT_ID', nil)
