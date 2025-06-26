@@ -76,7 +76,7 @@ module Auth
     def admin_callback
       code = params[:code]
       ENV.fetch('FRONTEND_URL', nil)
-      redirect_uri = ENV.fetch('MICROSOFT_OAUTH_CALLBACK_URL', nil)
+      redirect_uri = ENV.fetch('MICROSOFT_OAUTH_ADMIN_CALLBACK_URL', nil)
       client_id = ENV.fetch('MICROSOFT_CLIENT_ID', nil)
       client_secret = ENV.fetch('MICROSOFT_CLIENT_SECRET', nil)
       tenant_id = ENV.fetch('MICROSOFT_TENANT_ID', nil)
@@ -97,12 +97,43 @@ module Auth
 
       unless access_token
         Rails.logger.error "Microsoft OAuth failed: #{token_data}"
-        redirect_to(super_admin_session_path, flash: { error: "Microsoft OAuth failed" })
+        return redirect_to(super_admin_session_path, flash: { error: "Microsoft OAuth failed" })
       end
+
+      # Step 2: Get user info
+      profile_uri = URI("https://graph.microsoft.com/v1.0/me")
+      profile_request = Net::HTTP::Get.new(profile_uri)
+      profile_request['Authorization'] = "Bearer #{access_token}"
+
+      profile_response = Net::HTTP.start(profile_uri.hostname, profile_uri.port, use_ssl: true) do |http|
+        http.request(profile_request)
+      end
+
+      user_info = JSON.parse(profile_response.body)
+
+      email = user_info['mail'] || user_info['userPrincipalName']
+      name = user_info['displayName']
+
+      if email.blank?
+        return redirect_to(super_admin_session_path, flash: { error: "Microsoft OAuth failed" })
+      end
+
+
+      redirect_to(super_admin_session_path, flash: { error: @error_message }) && return unless valid_admin_credentials?(email)
 
       sign_in(:super_admin, @super_admin)
       flash.discard
       redirect_to super_admin_users_path
+
+      # user = User.find_by(email: email, type: 'SuperAdmin')
+
+      # if user
+      #   sign_in(user)
+      #   flash.discard
+      #   return redirect_to super_admin_users_path
+      # else
+      #   return redirect_to(super_admin_session_path, flash: { error: "Not super admin user." })
+      # end
     end
 
     private
@@ -115,6 +146,17 @@ module Auth
 
     def signup_enabled?
       GlobalConfigService.load('ENABLE_ACCOUNT_SIGNUP', 'false') != 'false'
+    end
+
+    def valid_admin_credentials?(email)
+      @super_admin = SuperAdmin.find_by!(email: email)
+      raise StandardError, 'Admin not found' if @super_admin.nil?
+
+      true
+    rescue StandardError => e
+      Rails.logger.error e.message
+      @error_message = 'Invalid credentials. Please try again.'
+      false
     end
   end
 end
