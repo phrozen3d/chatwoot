@@ -26,8 +26,8 @@ Create your deployment values file.
 Run the following commands to build the Chatwoot base and app images:
 
 ```
-docker-compose -f docker-compose.production.yaml build base
-docker-compose -f docker-compose.production.yaml build
+docker-compose -f docker-compose.phrozen.yaml build base
+docker-compose -f docker-compose.phrozen.yaml build
 ```
 
 
