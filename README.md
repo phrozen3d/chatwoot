@@ -1,8 +1,10 @@
-# Chatwoot
+# Chatwoot (Phrozen Fork)
 
-This is an fork version from [Chatwoot](https://github.com/chatwoot/chatwoot)
-More information please refer to: https://github.com/chatwoot/chatwoot
+This is a **forked version** of [Chatwoot](https://github.com/chatwoot/chatwoot), a customer engagement platform.  
+For full documentation and upstream details, please refer to the original repository:  
+👉 [https://github.com/chatwoot/chatwoot](https://github.com/chatwoot/chatwoot)
 
-## Phrozen Modify feature
+## 🔧 Phrozen Custom Features
 
-[X] Implement Microsoft Auth for both user login & super admin login.
+- [x] **Microsoft OAuth Integration**
+  - Supports login via Microsoft for both regular users and super admins.
