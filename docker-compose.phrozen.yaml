@@ -1,6 +1,5 @@
 services:
   base: &base
-    # platfrom: linux/amd64
     build:
       context: .
       dockerfile: ./docker/Dockerfile
@@ -9,6 +8,7 @@ services:
         EXECJS_RUNTIME: 'Node'
         RAILS_ENV: 'production'
         RAILS_SERVE_STATIC_FILES: 'true'
+    platform: linux/amd64
     tty: true
     stdin_open: true
     image: 914795699421.dkr.ecr.us-west-2.amazonaws.com/chatwoot:0.0.21
