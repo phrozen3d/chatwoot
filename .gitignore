@@ -94,5 +94,10 @@ yarn-debug.log*
 .vscode
 .claude/settings.local.json
 .cursor
+.pnpm-store
+.vscode/settings.json
+.vscode/settings.json
 
 phrozen-release-values.yml
+deploy-phrozen.sh
+.vscode/settings.json
