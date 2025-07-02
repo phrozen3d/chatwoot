@@ -11,7 +11,7 @@ services:
     platform: linux/amd64
     tty: true
     stdin_open: true
-    image: 914795699421.dkr.ecr.us-west-2.amazonaws.com/chatwoot:0.0.21
+    image: 914795699421.dkr.ecr.us-west-2.amazonaws.com/chatwoot:0.0.34
 
   rails:
     <<: *base
@@ -24,7 +24,7 @@ services:
     entrypoint: docker/entrypoints/rails.sh
     command: ['bundle', 'exec', 'rails', 's', '-p', '3000', '-b', '0.0.0.0']
     restart: always
-    image: 914795699421.dkr.ecr.us-west-2.amazonaws.com/chatwoot:0.0.21
+    image: 914795699421.dkr.ecr.us-west-2.amazonaws.com/chatwoot:0.0.34
 
   sidekiq:
     <<: *base
@@ -34,4 +34,4 @@ services:
       - INSTALLATION_ENV=docker
     command: ['bundle', 'exec', 'sidekiq', '-C', 'config/sidekiq.yml']
     restart: always
-    image: 914795699421.dkr.ecr.us-west-2.amazonaws.com/chatwoot:0.0.21
+    image: 914795699421.dkr.ecr.us-west-2.amazonaws.com/chatwoot:0.0.34
