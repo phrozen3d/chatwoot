@@ -51,21 +51,26 @@ module Auth
       end
 
       # Step 3: Sign in or sign up
-      user = User.find_by(email: email)
+      user = User.find_by(email: email.downcase)
 
       if user.nil?
+        begin
+          Rails.logger.info "Microsoft user info: #{user_info.to_json}"
+        rescue => e
+          Rails.logger.error "Failed to log user_info: #{e.message}"
+        end
+
         @resource, @account = AccountBuilder.new(
           account_name: extract_domain_without_tld(email),
           user_full_name: name,
-          email: email,
+          email: email.downcase,
           locale: I18n.locale,
           confirmed: true,
-          provider: 'microsoft'
         ).perform
 
         # Step 4: Redirect with SSO token
         sso_token = @resource.generate_sso_auth_token
-        redirect_to login_url(email: email, sso_auth_token: sso_token)
+        redirect_to login_url(email: email.downcase, sso_auth_token: sso_token)
       else
         # Step 4: Redirect with SSO token
         sso_token = user.generate_sso_auth_token
@@ -149,7 +154,7 @@ module Auth
     end
 
     def valid_admin_credentials?(email)
-      @super_admin = SuperAdmin.find_by!(email: email)
+      @super_admin = SuperAdmin.find_by!(email: email.downcase)
       raise StandardError, 'Admin not found' if @super_admin.nil?
 
       true
